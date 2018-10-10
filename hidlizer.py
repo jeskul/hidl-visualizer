@@ -25,7 +25,6 @@ with open('lshal.txt') as file_object:
                 pidToName[matchPidLine.group(1)] = pidName
             else:
                 foundPidTable = False
-
 #
 # Step 2. Read interfaces and server + client process ids from 'lshal'
 #
@@ -66,10 +65,12 @@ for HIDLInterface in HIDLTable:
         if clients.count(hwservicemanagerPid) > 0:
             clients.remove(hwservicemanagerPid)
             if len(clients) == 0:
-                print("    \"" + _server + "\" -> \"" + _server + "\" [label=\"" + _interface + "\n" + HIDLInterface[1] + "\"];")
+                print("    \"" + _server + "\" -> \"" + _server + "\" [label=\"" + _interface + "\\n" + HIDLInterface[1] + "\"];")
             else:
                 for client in clients:
                     _client = pidToName.get(str(client))
+                    if _client == None:
+                        continue
                     print("    \"" + _client + "\" -> \"" + _server + "\" [label=\"" + _interface + "\"];")
             
 print("}")
