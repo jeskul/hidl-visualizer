@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
 import re
+import os
+import sys
+import getopt
+import shutil
+
+inputfile = ''
+outputfile = ''
+try:
+    opts, args = getopt.getopt(sys.argv[1:],"hi:o:",["ifile=","ofile="])
+except getopt.GetoptError:
+    print (sys.argv[0] + " -i <inputfile> -o <outputfile>")
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == '-h':
+        print (sys.argv[0] + " -i <inputfile> -o <outputfile>")
+        print ("Where <inputfile> is a file containing the output of both 'ps -ef' and 'lshal' from an Android target")
+        sys.exit()
+    elif opt in ("-i", "--ifile"):
+        inputfile = arg
+    elif opt in ("-o", "--ofile"):
+        outputfile = arg
+
+if inputfile == "":
+    print ("Missing input file")
+    print (sys.argv[0] + " -i <inputfile> -o <outputfile>")
+    sys.exit(2)
 
 foundPidTable = False
 pidToName = {}
@@ -10,7 +36,7 @@ pidToName = {}
 #
 # Step 1. Read and parse the process ids and corresponding process names from 'ps -ef'
 #
-with open('lshal.txt') as file_object:
+with open(inputfile) as file_object:
     for line in file_object:
         line = line.rstrip()
         matchPidHead = re.match(r'UID *PID .*CMD', line)
@@ -53,6 +79,9 @@ with open('lshal.txt') as file_object:
 # Generating the the output
 #
 
+if outputfile != "":
+    sys.stdout = open(outputfile, "w")
+
 print("digraph hidl {")
 print("    graph [rankdir = \"LR\"];")
 print("    node [shape=box];")
@@ -74,3 +103,13 @@ for HIDLInterface in HIDLTable:
                     print("    \"" + _client + "\" -> \"" + _server + "\" [label=\"" + _interface + "\"];")
             
 print("}")
+
+sys.stdout = sys.__stdout__
+
+if outputfile != "":
+    print("Now run Graphviz dot:")
+    print("dot -Tpng " + outputfile + " -o <mygraphfile>.png")
+
+if shutil.which("dot") != None:
+    os.system("dot -Tpng " + outputfile + " -o " + outputfile + ".png")
+    print("Created " + outputfile + ".png")
