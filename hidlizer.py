@@ -51,12 +51,13 @@ with open(inputfile) as file_object:
                 pidToName[matchPidLine.group(1)] = pidName
             else:
                 foundPidTable = False
+
 #
 # Step 2. Read interfaces and server + client process ids from 'lshal'
 #
 HIDLTable = []
 foundHIDLTable = 0
-with open('lshal.txt') as file_object:
+with open(inputfile) as file_object:
     for line in file_object:
         line = line.rstrip()
         # It might seem/be unnecessary two match two different lines (the 'header' of the relevant part) here
@@ -68,7 +69,7 @@ with open('lshal.txt') as file_object:
         elif foundHIDLTable == 1 and matchHIDLHead2:
             foundHIDLTable = 2
         else:
-            matchHIDLLine = re.match(r'. (.+)::(\w+/\w+) +./. {8}(\d+|N/A) *(.*)', line)
+            matchHIDLLine = re.match(r'. (.+)::(\w+/\S+) +./. {8}(\d+|N/A) *(.*)', line)
             if matchHIDLLine and foundHIDLTable == 2:
                 if matchHIDLLine.group(3) != 'N/A':
                     HIDLTable.append((matchHIDLLine.group(1), matchHIDLLine.group(2), matchHIDLLine.group(3), matchHIDLLine.group(4)))
@@ -101,15 +102,15 @@ for HIDLInterface in HIDLTable:
                     if _client == None:
                         continue
                     print("    \"" + _client + "\" -> \"" + _server + "\" [label=\"" + _interface + "\"];")
-            
+
 print("}")
 
 sys.stdout = sys.__stdout__
 
-if outputfile != "":
+if outputfile != "" and shutil.which("dot") == None:
     print("Now run Graphviz dot:")
     print("dot -Tpng " + outputfile + " -o <mygraphfile>.png")
 
-if shutil.which("dot") != None:
+if outputfile != "" and shutil.which("dot") != None:
     os.system("dot -Tpng " + outputfile + " -o " + outputfile + ".png")
     print("Created " + outputfile + ".png")
