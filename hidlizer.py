@@ -39,11 +39,11 @@ pidToName = {}
 with open(inputfile) as file_object:
     for line in file_object:
         line = line.rstrip()
-        matchPidHead = re.match(r'UID *PID .*CMD', line)
+        matchPidHead = re.match(r' *UID *PID .*CMD', line)
         if matchPidHead:
             foundPidTable = True
         else:
-            matchPidLine = re.match(r'\w+ +(\d+) +.* \d\d:\d\d:\d\d (.+)\W*', line)
+            matchPidLine = re.match(r'[^ ]+ +(\d+) +.* \d\d:\d\d:\d\d (.+) *', line)
             if matchPidLine and foundPidTable:
                 pidName = matchPidLine.group(2).split(" ")[0]
                 if pidName == 'hwservicemanager':
@@ -69,7 +69,7 @@ with open(inputfile) as file_object:
         elif foundHIDLTable == 1 and matchHIDLHead2:
             foundHIDLTable = 2
         else:
-            matchHIDLLine = re.match(r'. (.+)::(\w+/\S+) +./. {8}(\d+|N/A) *(.*)', line)
+            matchHIDLLine = re.match(r'. (.+)::(\S+/\S+) +./.. {7}(\d+|N/A) *(.*)', line)
             if matchHIDLLine and foundHIDLTable == 2:
                 if matchHIDLLine.group(3) != 'N/A':
                     HIDLTable.append((matchHIDLLine.group(1), matchHIDLLine.group(2), matchHIDLLine.group(3), matchHIDLLine.group(4)))
