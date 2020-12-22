@@ -52,6 +52,7 @@ with open(inputfile) as file_object:
             else:
                 foundPidTable = False
 
+print(pidToName)
 #
 # Step 2. Read interfaces and server + client process ids from 'lshal'
 #
@@ -62,20 +63,21 @@ with open(inputfile) as file_object:
         line = line.rstrip()
         # It might seem/be unnecessary two match two different lines (the 'header' of the relevant part) here
         # but it will be done anyway...
-        matchHIDLHead = re.match(r'All binderized services \(registered services through hwservicemanager\)', line)
-        matchHIDLHead2 = re.match(r'. Interface +Thread Use Server Clients', line)
+        matchHIDLHead = re.match(r'\| All binderized services \(registered with hwservicemanager\)', line)
+        matchHIDLHead2 = re.match(r'VINTF . Interface +Thread Use Server Clients', line)
         if matchHIDLHead:
             foundHIDLTable = 1
         elif foundHIDLTable == 1 and matchHIDLHead2:
             foundHIDLTable = 2
         else:
-            matchHIDLLine = re.match(r'. (.+)::(\S+/\S+) +./.. {7}(\d+|N/A) *(.*)', line)
+            matchHIDLLine = re.match(r'.{7} (.+)::(\S+/\S+) +./.. {7}(\d+|N/A) *(.*)', line)
             if matchHIDLLine and foundHIDLTable == 2:
                 if matchHIDLLine.group(3) != 'N/A':
                     HIDLTable.append((matchHIDLLine.group(1), matchHIDLLine.group(2), matchHIDLLine.group(3), matchHIDLLine.group(4)))
             else:
                 foundHIDLTable = 0
 
+print(HIDLTable)
 #
 # Generating the the output
 #
