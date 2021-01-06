@@ -4,6 +4,10 @@ Python script that takes the output from 'ps -ef' and 'lshal' from a running And
 Note: This tool is mainly for the use of developing an Android device i.e. working with AOSP
 
 Example usage:
+<<<<<<< HEAD
+=======
+    
+>>>>>>> Correct messy README file.
     adb shell lshal > lshal_example.txt
     adb shell ps -ef >> lshal_example.txt
 
