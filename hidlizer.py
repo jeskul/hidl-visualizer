@@ -116,3 +116,4 @@ if outputfile != "" and shutil.which("dot") == None:
 if outputfile != "" and shutil.which("dot") != None:
     os.system("dot -Tpng " + outputfile + " -o " + outputfile + ".png")
     print("Created " + outputfile + ".png")
+    os.system("rm " + outputfile)

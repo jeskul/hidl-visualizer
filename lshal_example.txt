@@ -1,0 +1,20 @@
+UID            PID  PPID C STIME TTY          TIME CMD
+root             1     0 0 11:11:11 ?     00:00:01 init second_stage
+root             2     0 0 11:11:11 ?     00:00:00 [kthreadd]
+logd          2330     1 0 11:11:12 ?     00:00:01 logd
+system        2332     1 0 11:11:12 ?     00:00:00 servicemanager
+system        2334     1 0 11:11:12 ?     00:00:00 hwservicemanager
+system        2335     1 0 11:11:12 ?     00:00:00 vndservicemanager /dev/vndbinder
+vendor_alpha  2564     1 1 11:11:12 ?     00:00:01 alpha_service /dev/ttyS1
+vendor_beta   2566     1 6 11:11:12 ?     00:00:19 beta -something
+vendor_gamma  2582     1 0 11:11:12 ?     00:00:00 gamma
+vendor_delta  2596     1 0 11:11:12 ?   00:00:00 delta
+
+| All binderized services (registered with hwservicemanager)
+VINTF R Interface                                                                                   Thread Use Server Clients
+DM    Y vendor.acme.hardware.alpha@1.0::IAlpha/default                                             0/3        2564   2582 2334
+DM    Y vendor.acme.hardware.xyz@1.0::IXyz/default                                                 0/3        2564   2334
+DM    Y vendor.acme.hardware.abc@1.0::IAbc/default                                                 0/2        2582   2566 2334
+DM    Y vendor.acme.hardware.banana@1.0::IBanana/default                                           0/3        2582   2596 2334
+DM    Y vendor.acme.hardware.blueberry@1.0::IBlueberryGateway/default                              0/3        2564   2596 2334
+
