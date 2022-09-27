@@ -70,7 +70,7 @@ with open(inputfile) as file_object:
         elif foundHIDLTable == 1 and matchHIDLHead2:
             foundHIDLTable = 2
         else:
-            matchHIDLLine = re.match(r'.{7,10} (.+)::(\S+/\S+) +./.. {7}(\d+|N/A) *(.*)', line)
+            matchHIDLLine = re.match(r'.{7,13} (.+)::(\S+/\S+) +./.. {7}(\d+|N/A) *(.*)', line)
             if matchHIDLLine and foundHIDLTable == 2:
                 if matchHIDLLine.group(3) != 'N/A':
                     HIDLTable.append((matchHIDLLine.group(1), matchHIDLLine.group(2), matchHIDLLine.group(3), matchHIDLLine.group(4)))
