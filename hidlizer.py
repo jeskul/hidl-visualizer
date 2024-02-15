@@ -96,24 +96,28 @@ for HIDLInterface in HIDLTable:
         clients = HIDLInterface[3:][0].split(" ")
         if clients.count(hwservicemanagerPid) > 0:
             clients.remove(hwservicemanagerPid)
-            if len(clients) == 0:
-                print("    \"" + _server + "\" -> \"" + _server + "\" [label=\"" + _interface + "\\n" + HIDLInterface[1] + "\"];")
-            else:
-                for client in clients:
-                    _client = pidToName.get(str(client))
-                    if _client == None:
-                        continue
-                    print("    \"" + _client + "\" -> \"" + _server + "\" [label=\"" + _interface + "\"];")
+        if clients.count('') > 0:
+            clients.remove('')
+        if len(clients) == 0:
+            print("    \"" + _server + "\" -> \"" + _server + "\" [label=\"" + _interface + "\\n" + HIDLInterface[1] + "\"];")
+        else:
+            for client in clients:
+                _client = pidToName.get(str(client))
+                if _client == None:
+                    continue
+                print("    \"" + _client + "\" -> \"" + _server + "\" [label=\"" + _interface + "\"];")
 
 print("}")
 
 sys.stdout = sys.__stdout__
 
 if outputfile != "" and shutil.which("dot") == None:
+    print("Graphviz dot not found. Install it.")
     print("Now run Graphviz dot:")
     print("dot -Tpng " + outputfile + " -o <mygraphfile>.png")
+    print("Change -Tpng to -Tsvg for scalable vector graphics.")
 
 if outputfile != "" and shutil.which("dot") != None:
-    os.system("dot -Tpng " + outputfile + " -o " + outputfile + ".png")
-    print("Created " + outputfile + ".png")
+    os.system("dot -Tsvg " + outputfile + " -o " + outputfile + ".svg")
+    print("Created " + outputfile + ".svg")
     os.system("rm " + outputfile)
